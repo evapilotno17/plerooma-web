@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  /* a small palette that reads like a code editor: deep slate background,
+     warm light foreground, subtle accents. dark by default. */
+  --color-bg: #0f1115;
+  --color-bg-elev: #161a22;
+  --color-bg-elev-2: #1d2230;
+  --color-border: #2a3142;
+  --color-text: #d8dde8;
+  --color-text-dim: #8b94a8;
+  --color-accent: #f0a85a;          /* warm amber — matches the fox sigil */
+  --color-accent-soft: #f0a85a33;
+  --color-danger: #e57373;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+}
+
+* { box-sizing: border-box; }
+
+/* Scrollbar styling — only on webkit, blend with the theme. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover { background: #3a4255; }
+
+/* Rendered markdown — keep readable typography without pulling in a
+   full prose plugin. Used in both /admin/ and /ani/ preview panes. */
+.markdown-body {
+  font-family: ui-serif, Georgia, "Iowan Old Style", Cambria, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3,
+.markdown-body h4, .markdown-body h5, .markdown-body h6 {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 1.8rem 0 0.6rem;
+  color: var(--color-text);
+}
+.markdown-body h1 { font-size: 1.8rem; margin-top: 0.2rem; }
+.markdown-body h2 { font-size: 1.4rem; }
+.markdown-body h3 { font-size: 1.15rem; }
+.markdown-body p { margin: 0.8rem 0; }
+.markdown-body a { color: var(--color-accent); }
+.markdown-body a:hover { text-decoration: underline; }
+.markdown-body blockquote {
+  border-left: 3px solid var(--color-accent);
+  margin: 1rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: var(--color-text-dim);
+  font-style: italic;
+}
+.markdown-body code {
+  font-family: var(--font-mono);
+  background: var(--color-bg-elev);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+.markdown-body pre {
+  background: #0b0d12;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  line-height: 1.4;
+  margin: 1rem 0;
+}
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.85em;
+}
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+.markdown-body ul, .markdown-body ol { padding-left: 1.4rem; }
+.markdown-body li { margin: 0.25rem 0; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: 4px; }
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  width: 100%;
+  font-size: 0.95em;
+}
+.markdown-body th, .markdown-body td {
+  border: 1px solid var(--color-border);
+  padding: 0.4em 0.7em;
+  text-align: left;
+}
+.markdown-body th { background: var(--color-bg-elev); }
