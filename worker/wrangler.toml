@@ -1,0 +1,10 @@
+name = "plerooma"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+# Static SPA bundle (vite dist) is reshaped under assets/admin/ by
+# `npm run build`. See ./src/worker.js for routing — anything not under
+# /api/, /healthz, or /mcp is served from here.
+[assets]
+directory = "./assets"
+binding = "ASSETS"

@@ -1,0 +1,14 @@
+{
+  "name": "plerooma-worker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "cd .. && VITE_BASE=/admin/ VITE_API_BASE= npm run build && cd worker && rm -rf assets && mkdir -p assets/admin && cp -r ../dist/. assets/admin/",
+    "deploy": "npm run build && wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
