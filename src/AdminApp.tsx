@@ -7,8 +7,9 @@ import { Editor } from './components/Editor'
 import { Terminal } from './components/Terminal'
 import { Analytics } from './components/Analytics'
 import { ControlPanel } from './components/ControlPanel'
+import { Settings } from './components/Settings'
 
-type View = 'editor' | 'control-panel' | 'analytics'
+type View = 'editor' | 'control-panel' | 'analytics' | 'settings'
 
 type AuthState =
   | { kind: 'loading' }
@@ -21,12 +22,16 @@ const VIEW_PATHS: Record<View, string> = {
   'editor':        '/admin/editor',
   'control-panel': '/admin/visibility',
   'analytics':     '/admin/analytics',
+  'settings':      '/admin/settings',
 }
 
 function viewFromPath(): View {
+  // Match either the same-origin /admin/* paths or the Pages
+  // /plerooma-web/admin/* paths — the SPA boots under both.
   const p = window.location.pathname
-  if (p.startsWith('/admin/visibility')) return 'control-panel'
-  if (p.startsWith('/admin/analytics'))  return 'analytics'
+  if (p.includes('/admin/visibility')) return 'control-panel'
+  if (p.includes('/admin/analytics'))  return 'analytics'
+  if (p.includes('/admin/settings'))   return 'settings'
   return 'editor'
 }
 
@@ -159,13 +164,13 @@ export default function AdminApp() {
           </span>
         ) : (
           <span className="font-mono text-xs text-[var(--color-text-dim)]">
-            {view === 'analytics' ? 'analytics' : 'control panel'}
+            {view === 'analytics' ? 'analytics' : view === 'settings' ? 'settings' : 'control panel'}
           </span>
         )}
 
         {/* view nav */}
         <nav className="ml-4 flex items-center gap-1">
-          {(['editor', 'control-panel', 'analytics'] as const).map((v) => (
+          {(['editor', 'control-panel', 'analytics', 'settings'] as const).map((v) => (
             <button
               key={v}
               onClick={() => switchView(v)}
@@ -175,7 +180,7 @@ export default function AdminApp() {
                   : 'text-[var(--color-text-dim)] hover:text-[var(--color-text)]'
               }`}
             >
-              {v === 'editor' ? 'editor' : v === 'control-panel' ? 'visibility' : 'analytics'}
+              {v === 'editor' ? 'editor' : v === 'control-panel' ? 'visibility' : v === 'analytics' ? 'analytics' : 'settings'}
             </button>
           ))}
         </nav>
@@ -205,6 +210,7 @@ export default function AdminApp() {
       <div className="min-h-0 flex-1">
         {view === 'analytics' && <Analytics />}
         {view === 'control-panel' && <ControlPanel />}
+        {view === 'settings' && <Settings />}
         {view === 'editor' && (
           <PanelGroup
             direction="horizontal"

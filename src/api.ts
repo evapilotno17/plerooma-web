@@ -136,6 +136,16 @@ export const api = {
     return jsonOrThrow(r)
   },
 
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ ok: boolean }> {
+    const r = await fetch(apiURL('/api/auth/change-password'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+      credentials: 'include',
+    })
+    return jsonOrThrow(r)
+  },
+
   async list(path: string): Promise<{ path: string; entries: FSEntry[] }> {
     const url = apiURL('/api/fs/list?path=' + encodeURIComponent(path))
     const r = await fetch(url, { credentials: 'include' })
