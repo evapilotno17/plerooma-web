@@ -11,6 +11,13 @@
 //
 // The cookie itself is HttpOnly + Secure + SameSite=None in cross-
 // origin mode; we never read or set it from JS.
+//
+// Preflight avoidance: writes never set Content-Type explicitly. The
+// browser auto-sets `text/plain;charset=UTF-8` for string bodies,
+// which is a CORS-safelisted value → no OPTIONS preflight is sent.
+// The Go server's json.Decoder ignores Content-Type, so the body
+// parses as JSON regardless. This keeps the SPA usable behind
+// corporate proxies that drop or mangle OPTIONS preflights.
 
 const API_BASE = (import.meta.env.VITE_API_BASE ?? '').replace(/\/$/, '')
 
@@ -116,7 +123,6 @@ export const api = {
   async login(password: string): Promise<{ ok: boolean; expires: number }> {
     const r = await fetch(apiURL('/api/auth/login'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password }),
       credentials: 'include',
     })
@@ -139,7 +145,6 @@ export const api = {
   async changePassword(currentPassword: string, newPassword: string): Promise<{ ok: boolean }> {
     const r = await fetch(apiURL('/api/auth/change-password'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
       credentials: 'include',
     })
@@ -162,9 +167,11 @@ export const api = {
   },
 
   async writeFile(path: string, content: string): Promise<{ ok: boolean; bytes: number }> {
+    // POST (not PUT) — the server accepts both, and POST avoids the
+    // CORS preflight that PUT always triggers.
     const url = apiURL('/api/fs/file?path=' + encodeURIComponent(path))
     const r = await fetch(url, {
-      method: 'PUT',
+      method: 'POST',
       body: content,
       credentials: 'include',
     })
@@ -174,7 +181,6 @@ export const api = {
   async exec(cmd: string, opts?: { cwd?: string; timeoutMs?: number }): Promise<ExecResponse> {
     const r = await fetch(apiURL('/api/exec'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         cmd,
         cwd: opts?.cwd,
@@ -244,7 +250,6 @@ export const api = {
   async aniCmd(cmd: string, cwd: string): Promise<AniCmdResponse> {
     const r = await fetch(apiURL('/api/ani/cmd'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cmd, cwd }),
     })
     return jsonOrThrow(r)
