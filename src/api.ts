@@ -178,6 +178,24 @@ export const api = {
     return jsonOrThrow(r)
   },
 
+  async mkdir(path: string): Promise<{ ok: boolean; path: string }> {
+    const r = await fetch(apiURL('/api/fs/mkdir'), {
+      method: 'POST',
+      body: JSON.stringify({ path }),
+      credentials: 'include',
+    })
+    return jsonOrThrow(r)
+  },
+
+  async deleteEntry(path: string, recursive: boolean = false): Promise<{ ok: boolean; path: string }> {
+    const url = apiURL('/api/fs/file?path=' + encodeURIComponent(path) + (recursive ? '&recursive=true' : ''))
+    const r = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    return jsonOrThrow(r)
+  },
+
   async exec(cmd: string, opts?: { cwd?: string; timeoutMs?: number }): Promise<ExecResponse> {
     const r = await fetch(apiURL('/api/exec'), {
       method: 'POST',
